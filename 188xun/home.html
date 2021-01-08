@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <meta name="viewport"
+          content="initial-scale=1, width=device-width, height=device-height, viewport-fit=cover, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="csrf-param" content="_csrf-frontend">
+    <meta name="csrf-token" content="bXpvY3lwS2I9LgYoLRkpExVKOTEhGxQLJgIjGxIbfD1dICU5PAYZEw==">
+    <meta id="key" name="keywords" content="">
+    <meta id="desc" name="description" content="">
+    <link href="assets/css/main.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/other.css">
+    <script src="assets/js/base.js"></script>
+</head>
+<body>
+<header>
+    <div class="logo_div">
+        <img id="logo" src="" onerror="this.src='./assets/imgs/error.jpg'" alt="加载中...">
+        <span class="menu" onclick="showMenu()"></span>
+    </div>
+</header>
+<!-- <section>
+    <div class="search_div">
+        <input type="text" id="search" onchange="toSearch(this.value)" placeholder="搜索">
+    </div>
+</section> -->
+<section>
+    <div class="part_list">
+        <ul>
+        </ul>
+    </div>
+    <div class="plus" onclick="showPlus()"></div>
+</section>
+
+<section class="advertisement" style="display: none;">
+    <div style="height: 100px;text-align: center;line-height: 100px;">
+        <a href="">
+            <img style="width: 100%;height: 100px;" src="" onerror="this.src='./assets/imgs/error.jpg'" alt="加载中...">
+        </a>
+    </div>
+</section>
+
+<section class="main_url">
+    <div class="callOpen">
+        <div class="about_select">
+            <select class="czlist" onchange="codeChange()">
+                <option value="xglhc" nexttime="1558618200000">香港六合彩</option>
+                <!-- <option value="bjpks" nexttime="1558498240000">北京PK拾</option> -->
+                <option value="jssc" nexttime="1558498308000">极速赛车</option>
+                <option value="jsssc" nexttime="1558498305000">极速时时彩</option>
+                <option value="jsks" nexttime="1558499430000">江苏快3</option>
+                <option value="jsft" nexttime="1558498335000">极速飞艇</option>
+                <option value="xjssc" nexttime="1558498830000">新疆时时彩</option>
+                <!-- <option value="tjssc" nexttime="1558498830000">天津时时彩</option> -->
+                <option value="pcddxyeb" nexttime="1558498200000">PC蛋蛋幸运28</option>
+                <!-- <option value="gxklsf" nexttime="1558498845000">广西快乐十分</option> -->
+            </select>
+        </div>
+        <div class="issue_line">
+            <span class="issue"></span>
+            下期<span>
+            <span class="no_open">还有 <span class="hour">00</span>时<span class="minute">00</span>分<span
+                    class="sec">00</span>秒</span></span>
+            <span class="is_open" style="display: none;">开奖中...</span>
+            <!--<span class="refresh">刷新</span>-->
+            <!-- <span>&nbsp; <a class="to_history" style="color: #8c8c8c;" href="">开奖历史</a></span> -->
+        </div>
+        <div class="open_rs">
+            <ul class="open_ul">
+            </ul>
+        </div>
+    </div>
+</section>
+<div class="main_content">
+
+</div>
+<footer class="i_footer">
+    <div class="f_logo">
+        <img id="b_logo" src="" onerror="this.src='./assets/imgs/error.jpg'" alt="">
+    </div>
+    <div class="service-info">
+        <ul>
+        </ul>
+    </div>
+</footer>
+
+<div class="to_top">
+    <img src="assets/imgs/p.png" alt="">
+    <span>回顶部</span>
+</div>
+
+<div class="plus_detail" style="display: none;">
+    <!--style="display: none;"-->
+    <div class="plus_content">
+        <ul>
+        </ul>
+        <div class="close" onclick="hidePlus()"><img src="assets/imgs/n.png" alt=""></div>
+    </div>
+    <div class="mask_layer" onclick="hidePlus()" style="display:block">
+        <div style="width: 100%;height: 2000px;"></div>
+    </div>
+</div>
+
+<div class="menu_detail" style="display: none;">
+    <div class="menu_content">
+        <ul>
+        </ul>
+    </div>
+    <div class="mask_layer" style="display:block" onclick="hideMenu()">
+        <div style="width: 100%;height: 2000px;"></div>
+    </div>
+</div>
+</body>
+<script src="assets/js/jquery-1.7.2.min.js"></script>
+<script>
+
+    $(document).on("click", ".part_list ul>li", function () {
+        $(this).siblings().removeClass("on");
+        $(this).addClass("on");
+        var name = $(this).attr("data-name");
+        var domScrollId = $(".main_content").find("div[data-name='" + name + "']").attr("id");
+        $("#" + domScrollId)[0].scrollIntoView();
+    });
+
+    $(document).on("click", ".plus_content ul>li", function () {
+        hidePlus();
+        // $("#item-" + $(this).attr("id").split("-")[1])[0].scrollIntoView();
+        var name = $(this).attr("data-name");
+        var domScrollId = $(".main_content").find("div[data-name='" + name + "']").attr("id");
+        $("#" + domScrollId)[0].scrollIntoView();
+    });
+
+    function showPlus() {
+        $(".plus_detail").show();
+        $("body").css("overflow-y", "hidden");
+
+    }
+
+    function hidePlus() {
+        $(".plus_detail").hide();
+        $("body").css("overflow-y", "scroll");
+    }
+
+    function showMenu() {
+        $(".menu_detail").show();
+        $("body").css("overflow-y", "hidden");
+    }
+
+    function hideMenu() {
+        $(".menu_detail").hide();
+        $("body").css("overflow-y", "scroll");
+    }
+
+    //跳转到搜索页
+    function toSearch(v) {
+        window.location.href = "search.html?key=" + v;
+        $("#search").val('');
+    }
+
+    window.onscroll = function () {
+        var t = document.documentElement.scrollTop || document.body.scrollTop;
+        if (t > 140) {
+            $(".to_top").show();
+        } else {
+            $(".to_top").hide();
+        }
+    };
+    $(".to_top").click(function () {
+        $(".logo_div")[0].scrollIntoView();
+    });
+
+    var code = "xglhc";
+    var allSeconds = 0;//距离下期开奖时间（秒）(动态)
+    var interval;  //接口返回数据时距离下期开奖时间（秒）
+    var hour = "00";//时
+    var minute = "00";//分
+    var second = "00"; //秒
+    var st;
+
+    $(document).ready(function () {
+        //加载数据
+        $.ajax({
+            url: apiUrl + "/v1/h5/zixun/home",
+            type: "get",
+            dataType: "json",
+            success: function (rs) {
+                if (rs) {
+                    document.title = rs.name;         //网站标题
+                    setFavicon(rs.icon);                //网站图标
+                    $("#logo").attr("src", rs.logo);     //logo
+                    getNavigation(rs.menu);              //导航
+                    showNavData(rs.menu);                //显示隐藏导航数据
+                    getAdv(rs.ad);                       //广告位
+                    getLotteryData(rs.platformRecommend, rs.list); //彩种全部数据
+                    $("#b_logo").attr("src", rs.logo);    //底部Logo
+                    getCustomerPup(rs.executive);         //弹框客服
+                    getCustomerBot(rs.executive);         //底部客服
+                }
+            },
+            err: function (err) {
+                alert(err);
+            }
+        });
+
+        //网页图标
+        function setFavicon(data) {
+            var link = document.createElement('link');
+            link.type = 'image/x-icon';
+            link.rel = 'shortcut icon';
+            link.href = data;
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+
+        //导航数据
+        function getNavigation(data) {
+            //数据排序
+            data = data.sort(function (a, b) {
+                return a.id - b.id
+            });
+            var html = "";
+            for (var i = 0; i < data.length; i++) {
+                html += "<li data-name='" + data[i].name + "'>" + data[i].name + "</li>";
+            }
+            $(".part_list ul").html(html);
+        }
+
+        //列表显示导航全部数据
+        function showNavData(data) {
+            var html = "";
+            var showClass = "";
+            for (var i = 0; i < data.length; i++) {
+                showClass = data[i].name === '热门推荐' ? 'plus_hot' : '';
+                html += "<li data-name='" + data[i].name + "'><span class='" + showClass + "'></span>" + data[i].name + "</li>"
+            }
+            $(".plus_content ul").html(html);
+        }
+
+        //获取广告位信息
+        function getAdv(data) {
+            if (data.length > 0) {
+                $(".advertisement").show();
+            } else {
+                $(".advertisement").hide();
+            }
+            $(".advertisement").find("a").attr("href", data.url);
+            $(".advertisement").find("img").attr("src", data.image);
+        }
+
+        //彩种全部数据
+        function getLotteryData(data_heat, data_list) {
+            var html = "";
+            html += "<section class='main_url'><h4>站长推荐<span class='hot'></span></h4><div class='recommend'><ul>" + getConmmonData(data_heat) + "</ul></div></section>";
+            // html += "<section class='main_url'><h4>站长力推</h4> <div class='recommend'><ul><li><a href='http://www.666xun.com/hg.html'>皇冠股东分红</a></li></ul></div></section>";
+            html += getLotteryType(data_list);
+            $(".main_content").html(html);
+        }
+
+        //数据公用循环
+        function getConmmonData(data) {
+            var html = "";
+            for (var i = 0; i < data.length; i++) {
+                html += "<li><a href='" + JSON.parse(data[i].urls)[0].links_url + "'>" + data[i].name + "</a></li>";
+            }
+            return html;
+        }
+
+        //全部彩种数据分类
+        function getLotteryType(data) {
+            //数据排序
+            data = data.sort(function (a, b) {
+                return a.id - b.id
+            });
+            var html = "";
+            for (var i = 0; i < data.length; i++) {
+                var id = "item-" + data[i].id;
+                html += "<div class='e_credit' id='" + id + "' data-name='" + data[i].name + "'><img src='' alt=''><span class='e_title'>" + data[i].name + "</span></div>";
+                if(data[i].name==="站长推荐"){
+                    // html += "<section class='main_url'><h4>" + data[i].name + "</h4><div class='recommend'><ul>" + getConmmonData(data[i].child[0].platform) + "</ul></div></section>"
+                    var arr = data[i].child;
+                    for (var k = 0; k < arr.length; k++) {
+                        html += "<section class='main_url'><h4>" + arr[k].name + "</h4><div class='recommend'><ul>" + getConmmonData(arr[k].platform) + "</ul></div></section>"
+                    }
+                }else if (data[i].platform.length > 0) {
+                    html += "<section class='main_url'><h4>" + data[i].name + "</h4><div class='recommend'><ul>" + getConmmonData(data[i].platform) + "</ul></div></section>"
+                } else {
+                    var arr = data[i].child;
+                    for (var k = 0; k < arr.length; k++) {
+                        html += "<section class='main_url'><h4>" + arr[k].name + "</h4><div class='recommend'><ul>" + getConmmonData(arr[k].platform) + "</ul></div></section>"
+                    }
+                }
+            }
+            return html;
+        }
+
+        //弹框客服
+        function getCustomerPup(data) {
+            var html = "";
+            html += "<li><a id='index' href='index.html' style='display: contents;'><span class='menu_home'></span><p>导航</p></a></li>"
+            for (var i = 0; i < data.length; i++) {
+                html += "<li><img class='menu_wechat_img' src='" + data[i].icon + "' onerror='this.src=\"./assets/imgs/error.jpg\"'></img><p>" + data[i].account + "</p></li>";
+            }
+            $(".menu_content ul").html(html);
+        }
+
+        //页面底部客服
+        function getCustomerBot(data) {
+            var html = "";
+            for (var i = 0; i < data.length; i++) {
+                html += "<li><img src='" + data[i].icon + "' onerror='this.src=\"./assets/imgs/error.jpg\"'><p><span>" + data[i].name + "</span><br><span>" + data[i].account + "</span></p></li>";
+            }
+            $(".service-info ul").html(html);
+        }
+
+
+        $("#index").attr("href", "http://" + document.domain);
+        var site_name = localStorage.getItem("site_name");
+        var site_logo = localStorage.getItem("site_logo");
+        // var b_logo = localStorage.getItem("b_logo");
+        $("#desc").attr("content", site_name);
+        $("#key").attr("content", site_name);
+        $("title").text(site_name);
+        $("#logo").attr("src", site_logo);
+        getOpening(code);
+    })
+    ;
+
+    //选择彩种
+    function codeChange() {
+        code = $(".czlist option:selected").val();//选中的值
+        getOpening(code);
+    }
+
+    //刷新
+    $(".refresh").click(function () {
+        getOpening(code);
+    });
+
+    // 根據code获取彩种开奖数据
+    function getOpening(code) {
+        if (st) clearInterval(st);
+        // $(".to_history").attr("href", outUrl + "/lottery/callOpenHistory?code=" + code);
+        if (code === 'xglhc') {
+            $.ajax({
+                url: outUrl + "/v1/lottery/caihui/index/lottery-once",
+                type: "get",
+                dataType: "json",
+                data: {code: 'xglhc'},
+                success: function (rs) {
+                    if (!rs.code) {
+                        var data = rs.data;
+                        $(".issue").text("本期" + data['current_number'] + "期");
+                        countDown(data['next_time']);
+                        $(".open_ul").empty();
+                        var ulContent = "";
+                        data['current_code'].forEach(function (v, i) {
+                            const bg = data['color'][i] === 3 ? 'blue_bg' : data['color'][i] === 2 ? 'green_bg' : 'red_bg';
+                            const font = data['color'][i] === 3 ? 'blue_font' : data['color'][i] === 2 ? 'green_font' : 'red_font';
+                            ulContent += (i === 6 ? "<li class='ball_plus'>+</li>" : "") + "<li style='margin-left: 0;'><span class='ball_num " + bg + "' >" + v + "</span><span class='" + font + "'>" + data['five_elements'][i] + "</span></li>";
+                        });
+                        $(".open_ul").append(ulContent);
+                    }
+                },
+                err: function (err) {
+                    alert(err);
+                }
+            });
+        } else {
+            $.ajax({
+                url: outUrl + "/v1/lottery/caihui/index/lottery-once",
+                type: "post",
+                dataType: "json",
+                data: {code: code},
+                success: function (rs) {
+                    if (rs.code === 0) {
+                        var data = rs.data;
+                        $(".issue").text("本期" + data['current_number'] + "期");
+                        countDown(data['next_time']);
+                        $(".open_ul").empty();
+                        var ulContent = "";
+                        if (['bjpks', 'jssc', 'jsft'].indexOf(code) != -1) {
+                            data['current_code'].forEach(function (v) {
+                                const ss = Number(v);
+                                var cs = '';
+                                switch (ss) {
+                                    case 1:
+                                        cs = 's_1';
+                                        break;
+                                    case 2:
+                                        cs = 's_2';
+                                        break;
+                                    case 3:
+                                        cs = 's_3';
+                                        break;
+                                    case 4:
+                                        cs = 's_4';
+                                        break;
+                                    case 5:
+                                        cs = 's_5';
+                                        break;
+                                    case 6:
+                                        cs = 's_6';
+                                        break;
+                                    case 7:
+                                        cs = 's_7';
+                                        break;
+                                    case 8:
+                                        cs = 's_8';
+                                        break;
+                                    case 9:
+                                        cs = 's_9';
+                                        break;
+                                    case 10:
+                                        cs = 's_10';
+                                        break;
+                                    default:
+                                        cs = 's_1';
+                                }
+                                ulContent += "<li><span class='square " + cs + "'>" + ss + "</span></li>";
+                            });
+                        } else if (['jsssc', 'xjssc', 'tjssc'].indexOf(code) != -1) {
+                            data['current_code'].forEach(function (v, i) {
+                                ulContent += "<li><span class='ball_blue'>" + v + "</span></li>";
+                            });
+                        } else if ('jsks' === code) {
+                            data['current_code'].forEach(function (v, i) {
+                                var ss = Number(v);
+                                var cs = ss === 1 ? 'ks_1' : ss === 2 ? 'ks_2' : ss === 3 ? 'ks_3' : ss === 4 ? 'ks_4' : ss === 5 ? 'ks_5' : 'ks_6';
+                                ulContent += "<li><span class='ks " + cs + " '></span></li>";
+                            });
+                        } else if ('pcddxyeb' === code) {
+                            var a = Number(data['current_code'][0]);
+                            var b = Number(data['current_code'][1]);
+                            var c = Number(data['current_code'][2]);
+                            var s = a + b + c;
+                            ulContent += "<li><span class='dd dd_n'>" + a + "</span></li>" +
+                                "<li><span class=''><b class='jia'>＋</b></span></li>" +
+                                "<li><span class='dd dd_n'>" + b + "</span></li>" +
+                                "<li><span class=''><b class='jia'>＋</b></span></li>" +
+                                "<li><span class='dd dd_n'>" + c + "</span></li>" +
+                                "<li><span class=''><b class='jia'>=</b></span></li>" +
+                                "<li><span class='dd dd_s'>" + s + "</span></li>";
+                        } else {
+                            data['current_code'].forEach(function (v, i) {
+                                ulContent += "<li><span class='ball_red'>" + v + "</span></li>";
+                            });
+                        }
+                        $(".open_ul").append(ulContent);
+                    }
+                },
+                err: function (err) {
+                    console.log(err);
+                }
+            });
+        }
+    }
+
+    //下期开奖倒计时
+    function countDown(next_time) {
+        interval = allSeconds = Math.floor((new Date(next_time.replace(/-/g, "/")).getTime() - new Date().getTime()) / 1000);
+        st = setInterval(function () {
+            allSeconds -= 1;
+            if (allSeconds <= 0) {
+                minute = '00';
+                second = '00';
+                getOpening(code);
+                clearInterval(st);
+                $(".no_open").hide();
+                $(".is_open").show();
+            } else {
+                hour = ((allSeconds / 3600 < 10) ? '0' : '') + Math.floor(allSeconds / 3600);
+                const lastSeconds = allSeconds % 3600;
+                minute = ((lastSeconds / 60 < 10) ? '0' : '') + Math.floor(lastSeconds / 60);
+                second = (lastSeconds % 60 < 10 ? '0' : '') + lastSeconds % 60;
+                $(".hour").text(hour);
+                $(".minute").text(minute);
+                $(".sec").text(second);
+                $(".no_open").show();
+                $(".is_open").hide();
+            }
+        }, 1000);
+    }
+
+</script>
+
+</html>
+
+

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <meta name="viewport"
+          content="initial-scale=1, width=device-width, height=device-height, viewport-fit=cover, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="csrf-param" content="_csrf-frontend">
+    <meta name="csrf-token" content="bXpvY3lwS2I9LgYoLRkpExVKOTEhGxQLJgIjGxIbfD1dICU5PAYZEw==">
+    <meta id="key" name="keywords" content="">
+    <meta id="desc" name="description" content="">
+    <link href="assets/css/main.css" rel="stylesheet">
+    <script src="assets/js/base.js"></script>
+</head>
+<body>
+<header>
+    <div class="logo_div">
+        <img id="logo" src="" onerror='this.src="./assets/imgs/error.jpg"' alt="加载中...">
+        <span class="menu" onclick="showMenu()"></span>
+    </div>
+</header>
+<section>
+    <div class="search_div">
+        <input type="text" id="search" placeholder="搜索" onchange="searchSmg(this.value)">
+    </div>
+</section>
+
+<section>
+    <div class="outer_nav">
+        <ul style="margin: 10px 10px">
+
+        </ul>
+    </div>
+</section>
+
+
+<div class="menu_detail" style="display: none;">
+    <div class="menu_content">
+        <ul>
+        </ul>
+    </div>
+    <div class="mask_layer" style="display:block" onclick="hideMenu()">
+        <div style="width: 100%;height: 2000px;"></div>
+    </div>
+</div>
+</body>
+<script src="assets/js/jquery-1.7.2.min.js"></script>
+<script>
+
+    function showMenu() {
+        $(".menu_detail").show();
+    }
+
+    function hideMenu() {
+        $(".menu_detail").hide();
+    }
+
+    $(document).on("click", ".outer_nav ul>li", function () {
+        $(this).siblings().removeClass("on");
+        $(".inner_nav").hide();
+        $(this).addClass("on");
+        $(this).find(".inner_nav").show();
+    });
+
+    $(document).ready(function () {
+        var site_name = localStorage.getItem("site_name");
+        var site_icon = localStorage.getItem("site_icon");
+        var site_logo = localStorage.getItem("site_logo");
+        var site_customer = localStorage.getItem("site_customer");
+        document.title = site_name;
+        setFavicon(site_icon);
+        site_customer = JSON.parse(site_customer);
+        getCustomerPup(site_customer);
+        $("#desc").attr("content", site_name);
+        $("#key").attr("content", site_name);
+        // $("title").text("site_name");
+        $("#logo").attr("src", site_logo);
+        if (window.location.href.indexOf("key") !== -1) {
+            var val = location.href.split("key=")[1];
+            searchSmg(val);
+        }
+
+        //网页图标
+        function setFavicon(data) {
+            var link = document.createElement('link');
+            link.type = 'image/x-icon';
+            link.rel = 'shortcut icon';
+            link.href = data;
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+
+        //弹框客服
+        function getCustomerPup(data) {
+            var html = "";
+            html += "<li><a id='index' href='index.html' style='display: contents;'><span class='menu_home'></span><p>导航</p></a></li>"
+            for (var i = 0; i < data.length; i++) {
+                html += "<li><img class='menu_wechat_img' src='" + data[i].icon + "' onerror='this.src=\"./assets/imgs/error.jpg\"'></img><p>" + data[i].account + "</p></li>";
+            }
+            $(".menu_content ul").html(html);
+        }
+    });
+    //搜索
+    var searchSmg = function (val) {
+        $(".outer_nav").find("ul").empty();
+        $.ajax({
+            url: apiUrl + "/v1/h5/zixun/search",
+            type: "get",
+            dataType: "json",
+            data: {name: val},
+            success: function (rs) {
+                if (rs) {
+                    var html = "";
+                    for (var i = 0; i < rs.length; i++) {
+                        html += "<li><a target='_blank'>" + rs[i].name + "</a><ul class='inner_nav'><li class='on'><a target='_blank' href='" + (rs[i].urls)[0].links_url + "'>" + (rs[i].urls)[0].links_name + "</a></li></ul></li>";
+                    }
+                    $(".outer_nav ul").html(html);
+                }
+            },
+            err: function (err) {
+                console.log(err);
+            }
+        })
+    }
+
+</script>
+
+</html>
+
+

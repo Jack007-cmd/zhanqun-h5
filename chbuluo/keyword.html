@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <meta name="viewport"
+          content="initial-scale=1, width=device-width, height=device-height, viewport-fit=cover, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="csrf-param" content="_csrf-frontend">
+    <meta name="csrf-token" content="bXpvY3lwS2I9LgYoLRkpExVKOTEhGxQLJgIjGxIbfD1dICU5PAYZEw==">
+    <meta name="keywords" content="部落格">
+    <meta name="description" content="部落格">
+    <link href="./assets/css/main.css" rel="stylesheet">
+    <script src="./assets/js/jquery-1.7.2.min.js"></script>
+    <script src="./assets/js/base.js"></script>
+</head>
+<body class="keyword_body">
+<header>
+    <span class="bg-logo" onclick="window.location.href='index.html'">
+        <img id="bg-logo" src="" onerror="this.src='./assets/imgs/error.jpg'" alt="">
+    </span>
+    <span class="bg-close" onclick="window.location.href='index.html'"></span>
+</header>
+
+<section>
+    <div class="search_div">
+        <input id="search" type="text" onchange="beforeSearch(this.value)" placeholder="&nbsp;&nbsp;输入关键字">
+        <span class="search_span" onclick="beforeSearch($(this).prev().val())"><span class="bg-search"></span></span>
+    </div>
+</section>
+
+<section class="all_kind">
+    <ul class="kind_list">
+    </ul>
+</section>
+
+<section class="key_section" style="display: none;">
+
+</section>
+<div class="more_div" style="display: none"><span onclick="search(key)">更多</span></div>
+</body>
+<script>
+    /*初始化获取文章分类列表*/
+    $(document).ready(function () {
+        setConfiguration();
+        $.ajax({
+            url: apiUrl + "/v1/h5/blog/category",
+            type: "get",
+            dataType: "json",
+            success: function (rs) {
+                if (rs) {
+                    let allKind = "";
+                    rs.forEach(function (v) {
+                        allKind += "<li><a href='home.html?name=" + v['name'] + "&id=" + v['id'] + "'>" + v['name'] + "</a></li>";
+                    });
+                    $(".kind_list").append(allKind);
+                }
+
+            }, err: function (err) {
+                alert(err);
+            }
+        });
+    });
+
+    //关键词
+    var key = "";
+    //关键词检索结果分页
+    var pages = {
+        page: 1,
+        pageSize: 10,
+        hasNext: true
+    };
+    //点击检索预处理页面数据
+    var beforeSearch = function (val) {
+        pages.page = 1;
+        pages.hasNext = true;
+        if (val === undefined || val.trim() === "") {
+            $(".more_div").hide();
+            $(".all_kind").show();
+            $(".key_section").hide();
+            return false;
+        } else {
+            $(".all_kind").hide();
+            $(".key_section").show();
+            $(".key_section").empty();
+            key = val;
+            search(key);
+        }
+    };
+    //检索关键词
+    var search = function (val) {
+        $.ajax({
+            url: apiUrl + "/v1/h5/blog/searchs",
+            type: "get",
+            dataType: "json",
+            data: {keywords: val, page: pages.page, per_page: pages.pageSize},
+            success: function (rs) {
+                if (rs) {
+                    var data = rs.data;
+                    let k_item = "";
+                    data.forEach(function (v) {
+                        k_item += "<div class='item key_item'>\n" +
+                            "<a href='detail.html?id=" + v['id'] + "'>\n" +
+                            "<img src='" + v['cover_plan'] + "' onerror='this.src=\"./assets/imgs/error.jpg\"' style='width: 80px;height: 80px;border-radius: 5px;' alt=''/>\n" +
+                            "<div class='content_box'>\n" +
+                            "<h3>" + v['title'] + "</h3>\n" +
+                            "<p>" + v['description'] + "</p>\n" +
+                            "</div>\n" +
+                            "</a>\n" +
+                            "</div>";
+                    });
+                    $(".key_section").append(k_item);
+                    pages.hasNext = rs.current_page * rs.per_page < rs.total;
+                    if (pages.hasNext) {
+                        pages.page++;
+                        $(".more_div").show();
+                    } else {
+                        $(".more_div").hide();
+                    }
+                } else {
+                    alert(rs.msg);
+                }
+            }, err: function (err) {
+                alert(err);
+            }
+        });
+    }
+
+    //设置网站配置
+    function setConfiguration() {
+        var site_name = localStorage.getItem("site_name");
+        var site_icon = localStorage.getItem("site_icon");
+        var site_logo = localStorage.getItem("site_logo");
+        document.title = site_name;
+        setFavicon(site_icon);
+        $("#bg-logo").attr("src", site_logo);
+    }
+
+</script>
+</html>

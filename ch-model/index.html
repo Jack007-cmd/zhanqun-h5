@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <script data-ionic="inject">
+    (function(w){var i=w.Ionic=w.Ionic||{};i.version='3.9.2';i.angular='5.2.11';i.ionicNative='^2.9.0';i.staticDir='build/';})(window);
+  </script>
+  <meta charset="UTF-8">
+  <title>彩汇</title>
+  <meta name="referrer" content="never">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="">
+  <meta name="application-name" content="">
+  <meta http-equiv="Content-Security-Policy" content="default-src *;connect-src *;  img-src * 'self' data: ; script-src 'self' 'unsafe-inline' 'unsafe-eval' *;object-src 'self'; style-src  'self' 'unsafe-inline' *">
+  <!--<meta http-equiv="Content-Security-Policy"   content="script-src * 'unsafe-eval'; connect-src * 'unsafe-eval';object-src 'self'; style-src * 'unsafe-inline'; img-src *" >-->
+  <meta name="viewport" content="initial-scale=1, width=device-width, height=device-height, viewport-fit=cover, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="format-detection" content="telephone=yes">
+  <meta name="msapplication-tap-highlight" content="no">
+  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="assets/icon/logo.ico">
+  <link rel="shortcut icon" type="image/x-icon" href="assets/icon/logo.ico">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4e8ef7">
+
+  <!-- add to homescreen for ios -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <!-- cordova.js required for cordova apps (remove if not needed) -->
+  <!--<script src="cordova.js"></script>-->
+  <script src="assets/js/app-config.js"></script>
+  <script src="assets/js/jquery-1.7.2.min.js"></script>
+
+  <!-- un-comment this code to enable service worker
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('service worker installed'))
+        .catch(err => console.error('Error', err));
+    }
+  </script>-->
+  <script>
+    // (function(){
+    //   var isIPhone = window.navigator.appVersion.match(/iphone/gi);
+    //   if(!!isIPhone){
+    //     if(/iphone/gi.test(navigator.userAgent) && (screen.height >= 812 && screen.width >= 375)){
+    //       document.documentElement.classList.add('iphoneXTop');
+    //     }else{
+    //       document.documentElement.classList.add('iphoneTop');
+    //     }
+    //   }
+    // }());
+  </script>
+  <link href="build/main.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Ionic's root component and where the app will load -->
+  <ion-app></ion-app>
+
+  <!-- The polyfills js is generated during the build process -->
+  <script src="build/polyfills.js"></script>
+
+  <!-- The vendor js is generated during the build process
+       It contains all of the dependencies in node_modules -->
+  <script src="build/vendor.js"></script>
+
+  <!-- The main bundle js is generated during the build process -->
+  <script src="build/main.js"></script>
+
+</body>
+</html>

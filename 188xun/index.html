@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <meta name="viewport"
+          content="initial-scale=1, width=device-width, height=device-height, viewport-fit=cover, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="csrf-param" content="_csrf-frontend">
+    <meta name="csrf-token" content="bXpvY3lwS2I9LgYoLRkpExVKOTEhGxQLJgIjGxIbfD1dICU5PAYZEw==">
+    <meta id="key" name="keywords" content="">
+    <meta id="desc" name="description" content="">
+    <link href="assets/css/main.css" rel="stylesheet">
+    <script src="assets/js/base.js"></script>
+</head>
+<body>
+<header>
+    <div class="logo_div">
+        <img id="logo" src="./assets/imgs/error.jpg" onerror="this.src='./assets/imgs/error.jpg'" alt="加载中...">
+    </div>
+</header>
+<section>
+    <div class="line_list">
+        <h3>优质线路列表</h3>
+        <i>（ms值越小，线路越优质，访问速度越快）</i>
+        <div class="line_div">
+            <ul id="member">
+            </ul>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="service-info">
+        <ul id="customer">
+        </ul>
+    </div>
+</section>
+<section class="main_url" id="main_url_websites"></section>
+<section class="main_url" id="main_url_banks"></section>
+<section class="main_url" id="main_url_news"></section>
+<footer class="h_footer"></footer>
+
+</body>
+<script src="assets/js/jquery-1.7.2.min.js"></script>
+<script>
+    $(document).ready(function () {
+        //数据加载
+        $.ajax({
+            url: apiUrl + "/v1/h5/zixun/nav",
+            type: "get",
+            dataType: "json",
+            success: function (rs) {
+                if (rs) {
+                    document.title = rs.name;         //网站标题
+                    setFavicon(rs.icon);               //网站图标
+                    $("#logo").attr("src", rs.logo);   //logo
+                    getMember(rs.links);               //会员
+                    getCustomer(rs.executive);         //客服
+                    getSecData(rs.list);               //常用数据
+                    $(".h_footer").html(rs.copyright); //备案
+                    localStorage.clear();
+                    localStorage.setItem("site_name", rs.name);  //储存网站标题
+                    localStorage.setItem("site_icon", rs.icon);  //储存网站图标
+                    localStorage.setItem("site_logo", rs.logo);  //储存logo
+                    localStorage.setItem("site_customer", JSON.stringify(rs.executive)); //储存客服
+                }
+            },
+            err: function (err) {
+                alert(err);
+            }
+        });
+
+        //网页图标
+        function setFavicon(data) {
+            var link = document.createElement('link');
+            link.type = 'image/x-icon';
+            link.rel = 'shortcut icon';
+            link.href = data;
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+
+        //会员
+        function getMember(data) {
+            var html = "";
+            for (var i = 0; i < data.length; i++) {
+                html += "<li> <a href='" + data[i].url + "'><div class='line_time' data-url='" + data[i].url_testing + "'> <strong>0.03</strong> <span>ms</span> </div> <p>" + data[i].name + "</p></a></li>";
+            }
+            $("#member").html(html);
+        }
+
+        //客服
+        function getCustomer(data) {
+            var html = "";
+            for (var i = 0; i < data.length; i++) {
+                html += "<li><img src='" + data[i].icon + "' onerror='this.src=\"./assets/imgs/error.jpg\"'><p><span>" + data[i].name + "</span><br><span class='wechat' style='font-size: 8px;'>" + data[i].account + "</span></p></li>";
+            }
+            $("#customer").html(html);
+        }
+
+        //常用数据
+        function getSecData(data) {
+            for (var key in data) {
+                if (data[key].category_name === "常用网址") {
+                    var html_websites = "<h4>" + data[key].category_name + "</h4><div class='often_websites'><ul>" + getOften(1, data[key].nav) + "</ul></div>";
+                } else if (data[key].category_name === "常用网银") {
+                    var html_banks = "<h4>" + data[key].category_name + "</h4><div class='often_banks'><ul>" + getOften(2, data[key].nav) + "</ul></div>";
+                } else if (data[key].category_name === "常用资讯") {
+                    var html_news = "<h4>" + data[key].category_name + "</h4><div class='often_news'><ul>" + getOften(2, data[key].nav) + "</ul></div>";
+                }
+            }
+            $("#main_url_websites").html(html_websites);
+            $("#main_url_banks").html(html_banks);
+            $("#main_url_news").html(html_news);
+
+        }
+
+        //常用数据子目录
+        function getOften(num, data) {
+            var html = "";
+            for (var i = 0; i < data.length; i++) {
+                if (num == 1) {
+                    // html += "<li><a href='" + data[i].url + "'><img src='" + data[i].logo + "' alt=''><p>" + data[i].name + "</p></a></li>"
+                    html += "<li><a href='" + data[i].url + "'><img src='" + data[i].logo + "' onerror='this.src=\"./assets/imgs/error.jpg\"' alt='加载中...'></a></li>"
+                } else {
+                    html += "<li><a href='" + data[i].url + "'>" + data[i].name + "</a></li>"
+                }
+            }
+            return html;
+        }
+
+        <!--网站测速-->
+        /**return seconds**/
+        function request(URL, i) {
+            $.ajax({
+                type: "get",    //请求方式
+                async: true,    //是否异步
+                url: URL,
+                dataType: "jsonp",    //跨域json请求一定是jsonp
+                jsonp: "callbackparam",    //跨域请求的参数名，默认是callback
+                data: {},
+                jsonpCallback: "successCallback",    //自定义跨域参数值，回调函数名也是一样，默认为jQuery自动生成的字符串
+                beforeSend: function () {
+                    //请求前的处理
+                    window.beforeDate = new Date();
+                    window.beforeSeconds = beforeDate.getMilliseconds() / 1000;
+                },
+                success: function (data) {
+                },
+                //请求完成的处理
+                complete: function () {
+                    //请求成功处理，和本地回调完全一样
+                    var differSe;
+                    window.afterDate = new Date();
+                    window.afterSeconds = afterDate.getMilliseconds() / 1000;
+                    //differSe = (afterSeconds - beforeSeconds)*1000;
+                    differSe = ((afterDate.getTime() - beforeDate.getTime()) / 1000).toFixed(2);
+                    $('.line_div ul>li>a>div.line_time>strong').eq(i).text(differSe);
+                },
+                //请求错误的处理
+                error: function (error) {
+                    var text = '超时';
+                    if (error) {
+                        $('.line_div ul>li>a>div.line_time>strong').eq(i).text(text);
+                    }
+                    //console.log(error,'这是错误信息');
+                },
+            });
+        }
+    })
+    ;
+</script>
+</html>

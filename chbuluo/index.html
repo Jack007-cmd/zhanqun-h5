@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <meta name="viewport"
+          content="initial-scale=1, width=device-width, height=device-height, viewport-fit=cover, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="csrf-param" content="_csrf-frontend">
+    <meta name="csrf-token" content="bXpvY3lwS2I9LgYoLRkpExVKOTEhGxQLJgIjGxIbfD1dICU5PAYZEw==">
+    <meta name="keywords" content="部落格">
+    <meta name="description" content="部落格">
+    <link href="./assets/css/main.css" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/slider.css">
+    <script src="./assets/js/jquery-1.7.2.min.js"></script>
+    <script src="./assets/js/base.js"></script>
+    <script src="./assets/js/slider.js"></script>
+</head>
+<body>
+<header>
+    <span class="bg-logo">
+        <img id="bg-logo" src="" onerror="this.src='./assets/imgs/error.jpg'" alt="">
+    </span>
+    <span class="bg-menu" onclick="window.location.href='keyword.html'"></span>
+</header>
+<section>
+    <div class="container">
+        <div class="slider-container">
+            <div class="slider">
+
+            </div>
+        </div>
+    </div>
+    <div class="notice">
+        <img src="./assets/imgs/b-notice.png" alt=""/>
+        <span class="notice_kind"></span>
+        <span class="notice_nec"></span>
+    </div>
+</section>
+<div style="height:5px;background: #eaeaea;"></div>
+<section>
+    <div class="menu_content">
+        <ul>
+            <li class="on" onclick="typeSwitch(1,this)">
+                <span class="menu_latest"></span>
+                <p>最新</p>
+            </li>
+            <li onclick="typeSwitch(2,this)">
+                <span class="menu_hot"></span>
+                <p>最热</p>
+            </li>
+            <li onclick="typeSwitch(3,this)">
+                <span class="menu_rec"></span>
+                <p>推荐</p>
+            </li>
+        </ul>
+    </div>
+</section>
+<section>
+
+    <div class="all_article">
+    </div>
+
+    <div class="more_div" style="display: none;"><span onclick="getArticleList()">更多</span></div>
+</section>
+</body>
+<script>
+    var type = 1;//1 最新 2 最热 3推荐
+    var pages = {
+        page: 1,
+        pageSize: 10,
+        hasNext: true
+    };
+
+    //根据type page pageSize 获取文章列表数据
+    var getArticleList = function () {
+        $.ajax({
+            url: apiUrl + "/v1/h5/blog/article",//1 最新 2 最热 3推荐
+            type: "get",
+            dataType: "json",
+            data: {type: type, page: pages.page, per_page: pages.pageSize},
+            success: function (rs) {
+                if (rs) {
+                    var data = rs.data;
+                    var a_item = "";
+                    if (type == 1) {
+                        $(".notice_nec").click(function () {
+                            window.location.href = "detail.html?id=" + rs.data[0]['id'];
+                        }).html(rs.data[0]['title']);
+                        localStorage.setItem("site_fdata", JSON.stringify(rs.data[0]));  //储存第一条数据
+                    }
+                    data.forEach(function (v) {
+                        a_item += "<div class='item'>\n" +
+                            "<a href='detail.html?id=" + v['id'] + "'>\n" +
+                            "<img src='" + v['cover_plan'] + "' onerror='this.src=\"./assets/imgs/error.jpg\"' style='width: 80px;height: 80px;border-radius: 5px;' alt=''/>\n" +
+                            "<div class='content_box'>\n" +
+                            "<h3>" + v['title'] + "</h3>\n" +
+                            "<p>" + v['description'] + "</p>\n" +
+                            "</div>\n" +
+                            "</a>\n" +
+                            "</div>";
+                    });
+                    $(".all_article").append(a_item);
+                    pages.hasNext = rs.current_page * rs.per_page < rs.total;
+                    if (pages.hasNext) {
+                        pages.page++;
+                        $(".more_div").show();
+                    } else {
+                        $(".more_div").hide();
+                    }
+                } else {
+                    alert(rs.msg);
+                }
+            },
+            err: function (err) {
+                alert(err);
+            }
+        });
+    };
+    //初始化获取数据
+    $(document).ready(function () {
+        setWebsiteParam();
+        getBanners();
+        getArticleList();
+    });
+    //最新 最热 推荐切换
+    var typeSwitch = function (num, t) {
+        $(".more_div").hide();
+        $(t).siblings().removeClass("on");
+        $(t).addClass("on");
+        type = num;
+        pages.page = 1;
+        pages.pageSize = 10;
+        pages.hasNext = true;
+        $(".item").remove();
+        getArticleList();
+    }
+
+    //网站标题、网站图标、网站logo
+    function setWebsiteParam() {
+        $.ajax({
+            url: apiUrl + "/v1/h5/blog/config",
+            type: "get",
+            dataType: "json",
+            success: function (rs) {
+                if (rs) {
+                    document.title = rs.name;         //网站标题
+                    setFavicon(rs.icon);               //网站图标
+                    $("#bg-logo").attr("src", rs.logo); //网站logo
+                    $(".notice_kind").html(rs.firstArticleCategoryName);  //业界头条
+                    localStorage.clear();
+                    localStorage.setItem("site_name", rs.name);  //储存网站标题
+                    localStorage.setItem("site_icon", rs.icon);  //储存网站图标
+                    localStorage.setItem("site_logo", rs.logo);  //储存logo
+                    localStorage.setItem("site_lead", rs.firstArticleCategoryName);  //储存头条
+                }
+            },
+            err: function (err) {
+                alert(err);
+            }
+        })
+    }
+
+
+</script>
+</html>
